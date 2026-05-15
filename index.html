@@ -1133,6 +1133,7 @@ let AI_KEY='', AI_PROVIDER='deepseek', AI_PROJ={}, AI_TASKS=[], AI_SEL={};
 const AI_PROVIDERS={
   deepseek:{ label:"DeepSeek", url:"https://api.deepseek.com/chat/completions",  model:"deepseek-chat",       hint:"platform.deepseek.com", auth:"Bearer" },
   openai:  { label:"OpenAI",   url:"https://api.openai.com/v1/chat/completions",  model:"gpt-4o",              hint:"platform.openai.com",   auth:"Bearer" },
+  groq:    { label:"Groq",     url:"https://api.groq.com/openai/v1/chat/completions", model:"llama-3.3-70b-versatile", hint:"console.groq.com", auth:"Bearer" },
   grok:    { label:"Grok (xAI)",url:"https://api.x.ai/v1/chat/completions",       model:"grok-3",              hint:"console.x.ai",          auth:"Bearer" },
   anthropic:{ label:"Claude",  url:"https://api.anthropic.com/v1/messages",       model:"claude-sonnet-4-5",   hint:"console.anthropic.com", auth:"x-api-key" },
   gemini:  { label:"Gemini",   url:"",                                             model:"gemini-1.5-pro",      hint:"aistudio.google.com",   auth:"key" },
