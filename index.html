@@ -1169,8 +1169,10 @@ function saveComms(id){
 
 // ─── AI GENERATOR ─────────────────────────────────────────────────────────────
 // Load saved AI preferences
-let AI_KEY=localStorage.getItem("sa_ai_key")||'';
 let AI_PROVIDER=localStorage.getItem("sa_ai_provider")||'deepseek';
+function getAIKey(provider){ return localStorage.getItem("sa_ai_key_"+(provider||AI_PROVIDER))||''; }
+function setAIKey(provider,key){ localStorage.setItem("sa_ai_key_"+(provider||AI_PROVIDER),key); }
+let AI_KEY=getAIKey(AI_PROVIDER);
 let AI_PROJ={}, AI_TASKS=[], AI_SEL={};
 
 const AI_PROVIDERS={
@@ -1189,7 +1191,7 @@ function renderAIStep1(){
   var providerBtns = Object.keys(AI_PROVIDERS).map(function(k){
     var p=AI_PROVIDERS[k];
     var active=k===AI_PROVIDER;
-    return '<button type="button" onclick="AI_PROVIDER=\''+k+'\';localStorage.setItem(\'sa_ai_provider\',\''+k+'\');renderAIStep1()" style="padding:6px 12px;border-radius:6px;border:1px solid '+(active?'var(--accent)':'var(--border)')+';background:'+(active?'rgba(124,110,245,.15)':'none')+';color:'+(active?'var(--accent)':'var(--mid)')+';font-size:12px;font-weight:'+(active?'700':'400')+';font-family:inherit;cursor:pointer">'+p.label+'</button>';
+    return '<button type="button" onclick="AI_PROVIDER=\''+k+'\';AI_KEY=getAIKey(\''+k+'\');localStorage.setItem(\'sa_ai_provider\',\''+k+'\');renderAIStep1()" style="padding:6px 12px;border-radius:6px;border:1px solid '+(active?'var(--accent)':'var(--border)')+';background:'+(active?'rgba(124,110,245,.15)':'none')+';color:'+(active?'var(--accent)':'var(--mid)')+';font-size:12px;font-weight:'+(active?'700':'400')+';font-family:inherit;cursor:pointer">'+p.label+'</button>';
   }).join("");
   var prov=AI_PROVIDERS[AI_PROVIDER];
   document.getElementById("ai-body").innerHTML =
@@ -1214,7 +1216,7 @@ async function runAI(){
   if(!key){ alert("Enter your "+prov.label+" API key first"); return; }
   if(!brief){ alert("Paste a project brief first"); return; }
   AI_KEY = key;
-  localStorage.setItem("sa_ai_key", key);
+  setAIKey(AI_PROVIDER, key);
   var btn = document.getElementById("ai-gb");
   btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Generating...';
   document.getElementById("ai-res").innerHTML=
