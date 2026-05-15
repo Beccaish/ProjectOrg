@@ -354,9 +354,8 @@ nav{padding:10px 8px;flex:1}
   <div class="sfoot">
     <div id="demo-banner" style="display:none;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);font-size:11px;color:#F5A623;flex-wrap:wrap">
       <span style="font-size:14px">👁</span>
-      <span style="flex:1;font-weight:600">Demo mode</span>
-      <button onclick="openFirebaseSettings()" style="background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;cursor:pointer;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:inherit">Connect</button>
-      <button onclick="exitDemo()" style="background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;cursor:pointer;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:inherit">Sign in</button>
+      <span style="flex:1;font-weight:600">Demo mode — not saving</span>
+      <button onclick="document.getElementById('mod-auth').classList.add('open')" style="background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;cursor:pointer;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:inherit">Sign in</button>
     </div>
     <div id="auth-panel" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2px">
       <div id="auth-user-btn" style="display:none;align-items:center;gap:8px;padding:9px 11px;font-size:12px;color:var(--text)"></div>
@@ -370,9 +369,9 @@ nav{padding:10px 8px;flex:1}
       <span id="theme-label">☀ Light Mode</span>
       <div class="toggle-track" id="theme-track"><div class="toggle-knob"></div></div>
     </button>
-    <button class="np-btn" onclick="openFirebaseSettings()" style="font-size:11px;color:var(--dim);gap:8px">
+    <button class="np-btn" id="fb-settings-btn" onclick="openFirebaseSettings()" style="display:none;font-size:11px;color:var(--dim);gap:8px">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      🔥 Firebase Settings
+      ☁ Cloud Storage Settings
     </button>
     <button class="ai-btn" onclick="openAI();closeSB()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5h5l-4 3 1.5 5-4-3-4 3 1.5-5-4-3h5z"/></svg>AI Task Generator</button>
     <button class="np-btn" onclick="openProjModal();closeSB()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Project</button>
@@ -432,19 +431,52 @@ nav{padding:10px 8px;flex:1}
 <div class="overlay" id="mod-ai"><div class="modal wide"><div class="mhead"><div class="mtitle">✦ AI Task Generator</div><button class="mclose" onclick="closeM('mod-ai')">✕</button></div><div id="ai-body"></div></div></div>
 <div class="overlay" id="mod-time"><div class="modal"><div class="mhead"><div class="mtitle">⏱ Log Time</div><button class="mclose" onclick="closeM('mod-time')">✕</button></div><div id="time-body"></div></div></div>
 
-<!-- Firebase Setup Modal -->
+<!-- First-time Setup Modal -->
+<div class="overlay" id="mod-setup" style="z-index:2100">
+  <div class="modal" style="max-width:480px">
+    <div class="mhead"><div class="mtitle">🔥 Connect your Firebase project</div></div>
+    <div style="background:rgba(124,110,245,.08);border:1px solid rgba(124,110,245,.2);border-radius:8px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:var(--text);line-height:1.6">
+      <strong>One-time setup per browser.</strong> Your Firebase project handles Google Sign-In and cloud storage. After this, just click "Continue with Google" every time.
+    </div>
+    <div style="background:var(--s3);border-radius:8px;padding:11px 13px;margin-bottom:14px;font-size:12px;color:var(--mid);line-height:1.8">
+      <strong style="color:var(--text)">2 minute setup:</strong><br>
+      1. <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent)">console.firebase.google.com</a> → your project → Add Web App → copy config<br>
+      2. Authentication → Google → Enable<br>
+      3. Firestore Database → Create (test mode)<br>
+      4. Authentication → Settings → Authorized domains → add your GitHub Pages domain
+    </div>
+    <div class="frow">
+      <div class="field"><label class="flabel">API Key</label><input class="inp" id="su-apiKey" placeholder="AIza..."/></div>
+      <div class="field"><label class="flabel">Project ID</label><input class="inp" id="su-projectId" placeholder="my-project"/></div>
+    </div>
+    <div class="frow">
+      <div class="field"><label class="flabel">Auth Domain</label><input class="inp" id="su-authDomain" placeholder="my-project.firebaseapp.com"/></div>
+      <div class="field"><label class="flabel">App ID</label><input class="inp" id="su-appId" placeholder="1:123:web:abc"/></div>
+    </div>
+    <div class="field"><label class="flabel">Storage Bucket (optional)</label><input class="inp" id="su-storageBucket" placeholder="my-project.appspot.com"/></div>
+    <div id="su-error" style="color:var(--err);font-size:12px;min-height:18px;margin-bottom:6px"></div>
+    <div class="ffoot" style="justify-content:space-between">
+      <button class="btn bg" onclick="closeM('mod-setup');document.getElementById('mod-auth').classList.add('open')">Back</button>
+      <button class="btn bp" onclick="saveSetupConfig()">Save &amp; Sign In with Google →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cloud Storage Modal (optional, shown after sign-in) -->
 <div class="overlay" id="mod-firebase" style="z-index:2000">
   <div class="modal" style="max-width:500px">
-    <div class="mhead"><div class="mtitle">🔥 Connect to Firebase</div></div>
-    <div style="color:var(--mid);font-size:13px;line-height:1.65;margin-bottom:16px">
-      Connect your own Firebase project to save and sync your data. Each person uses their own Firebase — your data is completely private to your account.
+    <div class="mhead">
+      <div class="mtitle">☁ Connect Cloud Storage</div>
+      <button class="mclose" onclick="closeM('mod-firebase')">✕</button>
     </div>
-    <div style="background:var(--s3);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:var(--mid);line-height:1.8">
-      <strong style="color:var(--text)">One-time setup (2 mins):</strong><br>
+    <div style="background:rgba(56,201,184,.07);border:1px solid rgba(56,201,184,.2);border-radius:8px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:var(--text);line-height:1.6">
+      You're signed in and your data saves to this browser. Connect your own Firebase Firestore to <strong>sync across devices</strong> and never lose your data.
+    </div>
+    <div style="background:var(--s3);border-radius:8px;padding:11px 13px;margin-bottom:14px;font-size:12px;color:var(--mid);line-height:1.8">
+      <strong style="color:var(--text)">Setup (2 mins):</strong><br>
       1. <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent)">console.firebase.google.com</a> → New project → Add Web App → copy config<br>
       2. Enable <strong>Firestore Database</strong> → Start in test mode<br>
-      3. Enable <strong>Authentication → Google</strong> sign-in provider<br>
-      4. Paste your config below and click Connect
+      3. Paste your config below — done ✓
     </div>
     <div class="frow">
       <div class="field"><label class="flabel">API Key</label><input class="inp" id="fb-apiKey" placeholder="AIza..."/></div>
@@ -455,10 +487,10 @@ nav{padding:10px 8px;flex:1}
       <div class="field"><label class="flabel">App ID</label><input class="inp" id="fb-appId" placeholder="1:123:web:abc"/></div>
     </div>
     <div class="field"><label class="flabel">Storage Bucket (optional)</label><input class="inp" id="fb-storageBucket" placeholder="my-project.appspot.com"/></div>
-    <div id="fb-error" style="color:var(--err);font-size:12px;min-height:20px;margin-bottom:8px"></div>
+    <div id="fb-error" style="color:var(--err);font-size:12px;min-height:18px;margin-bottom:6px"></div>
     <div class="ffoot" style="justify-content:space-between">
-      <button class="btn bg" onclick="closeM('mod-firebase')">Cancel</button>
-      <button class="btn bp" onclick="initFirebase()">🔥 Connect Firebase</button>
+      <button class="btn bg" onclick="closeM('mod-firebase')">Maybe Later</button>
+      <button class="btn bp" onclick="connectFirestore()">☁ Connect Cloud Storage</button>
     </div>
   </div>
 </div>
@@ -468,20 +500,19 @@ nav{padding:10px 8px;flex:1}
   <div class="modal" style="max-width:360px;text-align:center">
     <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--a3));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px">⚡</div>
     <div class="mtitle" style="margin-bottom:6px">SA Command Centre</div>
-    <div style="color:var(--mid);font-size:13px;margin-bottom:24px;line-height:1.6">Sign in with Google to get started. Your data saves locally — connect cloud sync anytime from Settings.</div>
-    <button onclick="signInGoogle()" id="google-signin-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='var(--s2)'">
+    <div style="color:var(--mid);font-size:13px;margin-bottom:24px;line-height:1.6">Sign in with Google to save your work. Connect your own Firebase anytime for cloud sync across devices.</div>
+    <button onclick="signInGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='var(--s2)'">
       <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continue with Google
     </button>
     <div id="auth-error" style="color:var(--err);font-size:12px;margin-top:12px;min-height:18px"></div>
-    <div style="display:flex;align-items:center;gap:10px;margin:16px 0 12px">
+    <div style="display:flex;align-items:center;gap:10px;margin:14px 0 10px">
       <div style="flex:1;height:1px;background:var(--border)"></div>
-      <span style="color:var(--dim);font-size:11px">or</span>
+      <span style="color:var(--dim);font-size:11px">first time?</span>
       <div style="flex:1;height:1px;background:var(--border)"></div>
     </div>
-    <button onclick="loadDemo()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--mid);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)';this.style.color='var(--text)'" onmouseout="this.style.background='none';this.style.color='var(--mid)'">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Try Demo — no login needed
+    <button onclick="closeM('mod-auth');showSetupModal()" style="width:100%;padding:10px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--mid);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)';this.style.color='var(--text)'" onmouseout="this.style.background='none';this.style.color='var(--mid)'">
+      🔥 Connect Firebase to sign in
     </button>
   </div>
 </div>
@@ -1350,11 +1381,11 @@ function confirmAICreate(){
 // ─── MODALS ───────────────────────────────────────────────────────────────────
 function openM(id){document.getElementById(id).classList.add("open");}
 function closeM(id){document.getElementById(id).classList.remove("open");}
-document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o&&!["mod-firebase","mod-auth"].includes(o.id))o.classList.remove("open");}));
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o&&!["mod-setup","mod-auth"].includes(o.id))o.classList.remove("open");}));
 
 // ─── FIREBASE ─────────────────────────────────────────────────────────────────
-let FB=null, FSDB=null, FAUTH=null, FB_UID=null, FB_ENABLED=false;
-let SAVE_TIMER=null, SAVING=false;
+
+
 
 function setSaveStatus(msg,col){
   const el=document.getElementById("save-status");
@@ -1362,153 +1393,85 @@ function setSaveStatus(msg,col){
   el.innerHTML=msg?`<span style="width:7px;height:7px;border-radius:50%;background:${col||"var(--dim)"};flex-shrink:0"></span>${msg}`:"";
 }
 
-function initFirebase(){
-  const cfg={
-    apiKey:document.getElementById("fb-apiKey").value.trim(),
-    authDomain:document.getElementById("fb-authDomain").value.trim(),
-    projectId:document.getElementById("fb-projectId").value.trim(),
-    storageBucket:document.getElementById("fb-storageBucket").value.trim(),
-    appId:document.getElementById("fb-appId").value.trim(),
-  };
-  if(!cfg.apiKey||!cfg.projectId||!cfg.authDomain){
-    document.getElementById("fb-error").textContent="API Key, Project ID and Auth Domain are required.";return;
-  }
-  try{
-    localStorage.setItem("sa_fb_config",JSON.stringify(cfg));
-    bootFirebase(cfg);
-  }catch(e){
-    document.getElementById("fb-error").textContent="Error: "+e.message;
-  }
-}
+let FAUTH=null, FSDB=null, FB_UID=null, FB_ENABLED=false;
+let SAVE_TIMER=null, SAVING=false, USER_SIGNED_IN=false;
 
-function bootFirebase(cfg){
+// ── TIER 1: Google Auth (uses user's own Firebase config) ─────────────────────
+function bootAuth(cfg){
   try{
     if(!firebase.apps.length) firebase.initializeApp(cfg);
-    FB=firebase; FAUTH=firebase.auth();
-    try{ FSDB=firebase.firestore(); }catch(e){ FSDB=null; }
-    FB_ENABLED=true;
-    closeM("mod-firebase");
+    else firebase.app(); // use existing
+    FAUTH=firebase.auth();
     FAUTH.onAuthStateChanged(function(user){
       if(user){
-        FB_UID=user.uid;
+        FB_UID=user.uid; USER_SIGNED_IN=true;
         document.getElementById("mod-auth").classList.remove("open");
         document.getElementById("auth-error").textContent="";
         const b=document.getElementById("demo-banner");
-        if(b)b.style.display="none";
+        if(b) b.style.display="none";
         updateAuthUI(user);
-        loadUserData(user.uid);
+        // Init Firestore from same config
+        try{ FSDB=firebase.firestore(); FB_ENABLED=true; }catch(e){}
+        loadLocalData(user.uid);
+        if(FSDB) syncFromFirestore(user.uid);
+        else setSaveStatus("Saved to browser · connect ☁ cloud in Settings","var(--ok)");
       } else {
+        USER_SIGNED_IN=false; FB_UID=null;
         updateAuthUI(null);
-        document.getElementById("mod-auth").classList.add("open");
-        setSaveStatus("Please sign in","var(--warn)");
+        setSaveStatus("Demo mode — sign in to save","var(--warn)");
       }
     });
-  }catch(e){
-    console.error("Firebase boot error:",e);
-    setSaveStatus("Firebase error","var(--err)");
-    renderSB();renderPort();
-  }
+  }catch(e){ console.error("Auth boot error:",e); setSaveStatus("Firebase error: "+e.message,"var(--err)"); }
 }
 
 function signInGoogle(){
-  const errEl=document.getElementById("auth-error");
-  errEl.textContent="";
+  // If Firebase not yet initialised, need config first
   if(!FAUTH){
-    try{
-      const stored=localStorage.getItem("sa_fb_config");
-      if(stored){ bootFirebase(JSON.parse(stored)); setTimeout(signInGoogle,800); }
-      else{ errEl.textContent="Connect Firebase first via 🔥 Firebase Settings in the sidebar."; }
-    }catch(e){ errEl.textContent="Connect Firebase first via Settings."; }
-    return;
-  }
-  const provider=new firebase.auth.GoogleAuthProvider();
-  FAUTH.signInWithPopup(provider).catch(function(e){ errEl.textContent=e.message; });
-}
-
-function loadUserData(uid){
-  setSaveStatus("Loading...","var(--warn)");
-  const cacheKey="sa_data_"+uid;
-  try{
-    const cached=localStorage.getItem(cacheKey)||localStorage.getItem("sa_db_cache");
-    if(cached){
-      const d=JSON.parse(cached);
-      if(d.projects) DB.projects=d.projects;
-      if(d.tasks) DB.tasks=d.tasks;
-      if(d.logs) DB.logs=d.logs;
-      if(d.comms) DB.comms=d.comms;
-      renderSB(); renderPort();
-      setSaveStatus("Loaded ✓","var(--ok)");
-    } else {
-      DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
-      renderSB(); renderPort();
+    const stored=localStorage.getItem("sa_fb_config");
+    if(stored){
+      try{ bootAuth(JSON.parse(stored)); setTimeout(signInGoogle,800); return; }catch(e){}
     }
-  }catch(e){ renderSB(); renderPort(); }
-  // Sync Firestore in background if available
-  if(FSDB){
-    FSDB.collection("users").doc(uid).collection("data").doc("main").get().then(function(doc){
-      if(doc.exists){
-        const d=doc.data();
-        if(d.projects) DB.projects=d.projects;
-        if(d.tasks) DB.tasks=d.tasks;
-        if(d.logs) DB.logs=d.logs;
-        if(d.comms) DB.comms=d.comms;
-        saveLocal(uid);
-        renderSB(); renderPort();
-        setSaveStatus("Synced from cloud ✓","var(--ok)");
-      } else { saveToFirebase(true); }
-    }).catch(function(){ setSaveStatus("Saved locally","var(--ok)"); });
-  } else {
-    setSaveStatus("Saved locally — connect cloud via 🔥 Settings","var(--ok)");
-  }
-}
-
-function saveLocal(uid){
-  try{
-    const data=JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms});
-    localStorage.setItem("sa_data_"+(uid||"anon"),data);
-    localStorage.setItem("sa_db_cache",data);
-  }catch(e){}
-}
-
-async function saveToFirebase(immediate){
-  saveLocal(FB_UID||"anon");
-  if(!FSDB||!FB_UID){ setSaveStatus("Saved locally","var(--ok)"); return; }
-  if(!immediate){
-    clearTimeout(SAVE_TIMER);
-    SAVE_TIMER=setTimeout(()=>saveToFirebase(true),1500);
-    setSaveStatus("Saving...","var(--warn)");
+    // Show setup modal to get config
+    document.getElementById("auth-error").textContent="";
+    closeM("mod-auth");
+    showSetupModal();
     return;
   }
-  if(SAVING) return;
-  SAVING=true;
-  try{
-    await FSDB.collection("users").doc(FB_UID).collection("data").doc("main").set({
-      projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms,updatedAt:new Date().toISOString()
-    });
-    setSaveStatus("All changes saved ✓","var(--ok)");
-  }catch(e){
-    setSaveStatus("Saved locally (cloud unavailable)","var(--warn)");
+  document.getElementById("auth-error").textContent="";
+  const provider=new firebase.auth.GoogleAuthProvider();
+  FAUTH.signInWithPopup(provider).catch(function(e){
+    document.getElementById("auth-error").textContent=e.message;
+  });
+}
+
+function showSetupModal(){
+  document.getElementById("mod-setup").classList.add("open");
+}
+
+function saveSetupConfig(){
+  const cfg={
+    apiKey:document.getElementById("su-apiKey").value.trim(),
+    authDomain:document.getElementById("su-authDomain").value.trim(),
+    projectId:document.getElementById("su-projectId").value.trim(),
+    storageBucket:document.getElementById("su-storageBucket").value.trim()||"",
+    appId:document.getElementById("su-appId").value.trim(),
+  };
+  if(!cfg.apiKey||!cfg.projectId||!cfg.authDomain){
+    document.getElementById("su-error").textContent="API Key, Auth Domain and Project ID are required."; return;
   }
-  SAVING=false;
+  localStorage.setItem("sa_fb_config",JSON.stringify(cfg));
+  document.getElementById("mod-setup").classList.remove("open");
+  document.getElementById("mod-auth").classList.add("open");
+  bootAuth(cfg);
+  setTimeout(signInGoogle,600);
 }
-
-function skipFirebase(){
-  closeM("mod-firebase");
-  setSaveStatus("Saved locally","var(--ok)");
-}
-
-function autoSave(){ saveToFirebase(false); }
 
 function signOut(){
   if(!FAUTH) return;
   if(!confirm("Sign out?")) return;
   saveLocal(FB_UID);
   FAUTH.signOut();
-}
-
-function loadDemo(){
-  closeM("mod-auth");
-  FB_ENABLED=false;
+  USER_SIGNED_IN=false; FB_UID=null; FSDB=null; FB_ENABLED=false;
   loadDemoData();
   const b=document.getElementById("demo-banner");
   if(b) b.style.display="flex";
@@ -1516,42 +1479,136 @@ function loadDemo(){
   renderSB(); renderPort();
 }
 
-function exitDemo(){
-  loadDemoData();
-  const b=document.getElementById("demo-banner");
-  if(b) b.style.display="flex";
-  document.getElementById("mod-auth").classList.add("open");
-  setSaveStatus("Demo mode — sign in to save","var(--warn)");
+function updateAuthUI(user){
+  const userBtn=document.getElementById("auth-user-btn");
+  const signInBtn=document.getElementById("auth-signin-btn");
+  const fbBtn=document.getElementById("fb-settings-btn");
+  if(!userBtn||!signInBtn) return;
+  if(user){
+    userBtn.style.display="flex"; signInBtn.style.display="none";
+    if(fbBtn) fbBtn.style.display="flex";
+    userBtn.innerHTML=
+      `<img src="${user.photoURL||""}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'"/>`+
+      `<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(user.displayName||user.email||"Signed in")}</div>`+
+      `<div style="font-size:10px;color:var(--dim)">${esc(user.email||"")}</div></div>`+
+      `<button onclick="signOut()" style="background:var(--s3);border:none;color:var(--mid);cursor:pointer;padding:5px 8px;border-radius:5px;font-size:11px;font-family:inherit" onmouseover="this.style.color='var(--err)'" onmouseout="this.style.color='var(--mid)'">Sign out</button>`;
+  }else{
+    userBtn.style.display="none"; signInBtn.style.display="flex";
+    if(fbBtn) fbBtn.style.display="none";
+  }
 }
+
+// ── TIER 2: localStorage ──────────────────────────────────────────────────────
+function loadLocalData(uid){
+  try{
+    const raw=localStorage.getItem("sa_data_"+uid)||localStorage.getItem("sa_db_cache");
+    if(raw){
+      const d=JSON.parse(raw);
+      if(d.projects) DB.projects=d.projects;
+      if(d.tasks) DB.tasks=d.tasks;
+      if(d.logs) DB.logs=d.logs;
+      if(d.comms) DB.comms=d.comms;
+    } else {
+      DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
+    }
+    renderSB(); renderPort();
+  }catch(e){ DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[]; renderSB(); renderPort(); }
+}
+
+function saveLocal(uid){
+  if(!uid) return;
+  try{
+    const data=JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms});
+    localStorage.setItem("sa_data_"+uid,data);
+    localStorage.setItem("sa_db_cache",data);
+  }catch(e){}
+}
+
+// ── TIER 3: User's own Firestore ──────────────────────────────────────────────
+function getStoredFsCfg(){
+  try{ const s=localStorage.getItem("sa_fs_config"); if(s){ const c=JSON.parse(s); if(c.projectId) return c; } }catch(e){}
+  return null;
+}
+
+function connectFirestore(){
+  if(!USER_SIGNED_IN){ document.getElementById("mod-auth").classList.add("open"); closeM("mod-firebase"); return; }
+  const cfg={
+    apiKey:document.getElementById("fb-apiKey").value.trim(),
+    authDomain:document.getElementById("fb-authDomain").value.trim()||AUTH_CFG.authDomain,
+    projectId:document.getElementById("fb-projectId").value.trim(),
+    storageBucket:document.getElementById("fb-storageBucket").value.trim(),
+    appId:document.getElementById("fb-appId").value.trim(),
+  };
+  if(!cfg.apiKey||!cfg.projectId){ document.getElementById("fb-error").textContent="API Key and Project ID are required."; return; }
+  localStorage.setItem("sa_fs_config",JSON.stringify(cfg));
+  connectFirestoreWithCfg(cfg);
+  closeM("mod-firebase");
+}
+
+function connectFirestoreWithCfg(cfg){
+  try{
+    let fsApp;
+    try{ fsApp=firebase.app("fsapp"); }
+    catch(e){ fsApp=firebase.initializeApp(cfg,"fsapp"); }
+    FSDB=fsApp.firestore(); FB_ENABLED=true;
+    if(FB_UID) syncFromFirestore(FB_UID);
+  }catch(e){ console.error("Firestore connect error:",e); setSaveStatus("Cloud connect failed — saving to browser","var(--err)"); }
+}
+
+async function syncFromFirestore(uid){
+  setSaveStatus("Syncing from cloud...","var(--warn)");
+  try{
+    const doc=await FSDB.collection("users").doc(uid).collection("data").doc("main").get();
+    if(doc.exists){
+      const d=doc.data();
+      if(d.projects) DB.projects=d.projects;
+      if(d.tasks) DB.tasks=d.tasks;
+      if(d.logs) DB.logs=d.logs;
+      if(d.comms) DB.comms=d.comms;
+      saveLocal(uid); renderSB(); renderPort();
+      setSaveStatus("Synced from cloud ✓","var(--ok)");
+    } else { await saveToFirebase(true); }
+  }catch(e){ setSaveStatus("Cloud sync failed — saved to browser","var(--warn)"); }
+}
+
+async function saveToFirebase(immediate){
+  saveLocal(FB_UID||"anon");
+  if(!FB_ENABLED||!FSDB||!FB_UID){ setSaveStatus(USER_SIGNED_IN?"Saved to browser ✓":"Demo mode","var(--ok)"); return; }
+  if(!immediate){
+    clearTimeout(SAVE_TIMER);
+    SAVE_TIMER=setTimeout(()=>saveToFirebase(true),1500);
+    setSaveStatus("Saving...","var(--warn)"); return;
+  }
+  if(SAVING) return; SAVING=true;
+  try{
+    await FSDB.collection("users").doc(FB_UID).collection("data").doc("main").set({
+      projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms,updatedAt:new Date().toISOString()
+    });
+    setSaveStatus("All changes saved ✓","var(--ok)");
+  }catch(e){ setSaveStatus("Saved to browser (cloud unavailable)","var(--warn)"); }
+  SAVING=false;
+}
+
+function autoSave(){ saveToFirebase(false); }
+function initFirebase(){ connectFirestore(); }
+function skipFirebase(){ closeM("mod-firebase"); }
 
 function openFirebaseSettings(){
-  // Pre-fill existing config if saved
   try{
-    const stored=localStorage.getItem("sa_fb_config");
-    if(stored){
-      const cfg=JSON.parse(stored);
-      setTimeout(function(){
-        if(document.getElementById("fb-apiKey")) document.getElementById("fb-apiKey").value=cfg.apiKey||"";
-        if(document.getElementById("fb-projectId")) document.getElementById("fb-projectId").value=cfg.projectId||"";
-        if(document.getElementById("fb-authDomain")) document.getElementById("fb-authDomain").value=cfg.authDomain||"";
-        if(document.getElementById("fb-appId")) document.getElementById("fb-appId").value=cfg.appId||"";
-        if(document.getElementById("fb-storageBucket")) document.getElementById("fb-storageBucket").value=cfg.storageBucket||"";
-      },50);
-    }
+    const cfg=getStoredFsCfg();
+    if(cfg){ setTimeout(function(){
+      if(document.getElementById("fb-apiKey")) document.getElementById("fb-apiKey").value=cfg.apiKey||"";
+      if(document.getElementById("fb-projectId")) document.getElementById("fb-projectId").value=cfg.projectId||"";
+      if(document.getElementById("fb-authDomain")) document.getElementById("fb-authDomain").value=cfg.authDomain||"";
+      if(document.getElementById("fb-appId")) document.getElementById("fb-appId").value=cfg.appId||"";
+      if(document.getElementById("fb-storageBucket")) document.getElementById("fb-storageBucket").value=cfg.storageBucket||"";
+    },50); }
   }catch(e){}
-  openM("mod-firebase");
-  closeSB();
+  openM("mod-firebase"); closeSB();
 }
 
-function skipFirebase(){
-  closeM("mod-firebase");
-  FB_ENABLED=false;
-  setSaveStatus("Local mode — no cloud sync","var(--dim)");
-  renderSB();renderPort();
-}
-
-// Auto-save hook — called after every data mutation
-function autoSave(){ saveToFirebase(false); }
+function loadDemo(){ closeM("mod-auth"); }
+function exitDemo(){ document.getElementById("mod-auth").classList.add("open"); }
 
 // ─── DEMO DATA ────────────────────────────────────────────────────────────────
 function loadDemoData(){
@@ -1580,27 +1637,18 @@ function loadDemoData(){
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function(){
-  // Always render demo data immediately so app is visible
   loadDemoData();
-  const b=document.getElementById("demo-banner");
-  if(b) b.style.display="flex";
   renderSB(); renderPort();
-
   try{
     const stored=localStorage.getItem("sa_fb_config");
     if(stored){
       const cfg=JSON.parse(stored);
-      if(cfg.apiKey&&cfg.projectId){
-        // Boot Firebase silently — will replace demo data on sign-in
-        bootFirebase(cfg);
-        return;
-      }
+      if(cfg.apiKey&&cfg.projectId){ bootAuth(cfg); return; }
     }
-  }catch(e){ console.warn("Init error:",e); }
-
-  // No Firebase config — show sign-in modal over demo
-  setSaveStatus("Demo mode — not saving","var(--warn)");
+  }catch(e){}
+  // No config yet — show sign-in modal with "Connect Firebase" option
   document.getElementById("mod-auth").classList.add("open");
+  setSaveStatus("Demo mode — sign in to save","var(--warn)");
 })();
 </script>
 </body>
