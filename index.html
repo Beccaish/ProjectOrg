@@ -352,6 +352,12 @@ nav{padding:10px 8px;flex:1}
     <div id="proj-nav"></div>
   </nav>
   <div class="sfoot">
+    <div id="demo-banner" style="display:none;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);font-size:11px;color:#F5A623;flex-wrap:wrap">
+      <span style="font-size:14px">👁</span>
+      <span style="flex:1;font-weight:600">Demo mode</span>
+      <button onclick="openFirebaseSettings()" style="background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;cursor:pointer;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:inherit">Connect</button>
+      <button onclick="exitDemo()" style="background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;cursor:pointer;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:inherit">Sign in</button>
+    </div>
     <div id="auth-panel" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2px">
       <div id="auth-user-btn" style="display:none;align-items:center;gap:8px;padding:9px 11px;font-size:12px;color:var(--text)"></div>
       <button id="auth-signin-btn" onclick="document.getElementById('mod-auth').classList.add('open')" style="display:none;width:100%;background:none;border:none;padding:9px 11px;font-size:12px;color:var(--accent);font-weight:700;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px">
@@ -363,6 +369,10 @@ nav{padding:10px 8px;flex:1}
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
       <span id="theme-label">☀ Light Mode</span>
       <div class="toggle-track" id="theme-track"><div class="toggle-knob"></div></div>
+    </button>
+    <button class="np-btn" onclick="openFirebaseSettings()" style="font-size:11px;color:var(--dim);gap:8px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      🔥 Firebase Settings
     </button>
     <button class="ai-btn" onclick="openAI();closeSB()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5h5l-4 3 1.5 5-4-3-4 3 1.5-5-4-3h5z"/></svg>AI Task Generator</button>
     <button class="np-btn" onclick="openProjModal();closeSB()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Project</button>
@@ -447,7 +457,7 @@ nav{padding:10px 8px;flex:1}
     <div class="field"><label class="flabel">Storage Bucket (optional)</label><input class="inp" id="fb-storageBucket" placeholder="my-project.appspot.com"/></div>
     <div id="fb-error" style="color:var(--err);font-size:12px;min-height:20px;margin-bottom:8px"></div>
     <div class="ffoot" style="justify-content:space-between">
-      <button class="btn bg" onclick="skipFirebase()">Skip — local only</button>
+      <button class="btn bg" onclick="closeM('mod-firebase')">Cancel</button>
       <button class="btn bp" onclick="initFirebase()">🔥 Connect Firebase</button>
     </div>
   </div>
@@ -462,6 +472,15 @@ nav{padding:10px 8px;flex:1}
     <button onclick="signInGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='var(--s2)'">
       <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continue with Google
+    </button>
+    <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <span style="color:var(--dim);font-size:11px">or</span>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+    <button onclick="loadDemo()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:11px 16px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--mid);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)';this.style.color='var(--text)'" onmouseout="this.style.background='none';this.style.color='var(--mid)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Try Demo — no login needed
     </button>
     <div id="auth-error" style="color:var(--err);font-size:12px;margin-top:14px;min-height:18px"></div>
   </div>
@@ -517,81 +536,7 @@ function toggleTheme(){
 }
 
 // ─── DB ────────────────────────────────────────────────────────────────────────
-let DB={
-  projects:[
-    {id:"p1",name:"Contoso PP Modernisation",client:"Contoso Ltd",code:"CPM-001",description:"End-to-end Power Platform implementation replacing legacy systems with modern PA/PF/PBI stack.",phase:"Build",status:"Active",billing:true,hourlyRate:1800,currency:"ZAR",startDate:"2025-02-01",targetDate:"2025-07-31",totalBudgetHours:320,createdAt:now(),color:"#7B6CF6"},
-    {id:"p2",name:"AI Chatbot – HR Self-Service",client:"FinServ Group",code:"AIC-002",description:"Copilot Studio chatbot with AI Builder document intelligence for HR self-service portal.",phase:"Design",status:"Active",billing:true,hourlyRate:2200,currency:"ZAR",startDate:"2025-03-15",targetDate:"2025-06-30",totalBudgetHours:180,createdAt:now(),color:"#FF6B9D"},
-    {id:"p3",name:"Leadership AI Simulation",client:"Hyperclear Tech",code:"LAS-001",description:"Copilot Studio-based leadership assessment simulation scoring candidates across four principles (Care, Means, Ability, Accountability) with automated Power Automate reporting to SharePoint and assessor email.",phase:"Build",status:"Active",billing:true,hourlyRate:1800,currency:"ZAR",startDate:"2025-04-01",targetDate:"2025-07-31",totalBudgetHours:40,createdAt:now(),color:"#4ECDC4"},
-  ],
-  tasks:[
-    {id:"t1",projectId:"p1",title:"Requirements workshop – Sales module",type:"req_gather",phase:"Discovery",status:"Done",priority:"High",role:"Solution Architect",estMins:120,loggedMins:135,dueDate:"2025-02-10",tags:["Stakeholder","Sales"],notes:"14 user stories captured.",timeEntries:[{id:"te1",mins:135,desc:"Workshop session 1",date:"2025-02-09"}],createdAt:now()},
-    {id:"t2",projectId:"p1",title:"Functional spec – Order Management PA",type:"func_req",phase:"Design",status:"Done",priority:"Critical",role:"Functional Lead",estMins:240,loggedMins:260,dueDate:"2025-02-20",tags:["Canvas App"],notes:"",timeEntries:[{id:"te2",mins:120,desc:"Initial drafting",date:"2025-02-17"},{id:"te3",mins:140,desc:"Review revisions",date:"2025-02-19"}],createdAt:now()},
-    {id:"t3",projectId:"p1",title:"Architecture design – Dataverse schema",type:"arch",phase:"Design",status:"Done",priority:"Critical",role:"Solution Architect",estMins:300,loggedMins:285,dueDate:"2025-02-28",tags:[],notes:"",timeEntries:[{id:"te4",mins:285,desc:"Full design session",date:"2025-02-26"}],createdAt:now()},
-    {id:"t4",projectId:"p1",title:"Power Apps – Order Management Sprint 1",type:"dev_pa",phase:"Build",status:"In Progress",priority:"Critical",role:"Developer",estMins:960,loggedMins:480,dueDate:"2025-04-15",tags:["Sprint 1"],notes:"",timeEntries:[{id:"te5",mins:240,desc:"Canvas app scaffold",date:"2025-03-18"},{id:"te6",mins:240,desc:"Form screens",date:"2025-03-25"}],createdAt:now()},
-    {id:"t5",projectId:"p1",title:"Power Automate – PO approval flow",type:"dev_pf",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:240,loggedMins:0,dueDate:"2025-04-30",tags:["Sprint 2"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"t6",projectId:"p1",title:"Non-functional: Performance & security",type:"nonfunc_req",phase:"Design",status:"Done",priority:"High",role:"Technical Lead",estMins:180,loggedMins:200,dueDate:"2025-03-05",tags:["Governance"],notes:"",timeEntries:[{id:"te7",mins:200,desc:"Security review",date:"2025-03-04"}],createdAt:now()},
-    {id:"t7",projectId:"p1",title:"ALM setup – Dev/Test/Prod pipelines",type:"alm",phase:"Build",status:"In Progress",priority:"High",role:"Technical Lead",estMins:300,loggedMins:120,dueDate:"2025-04-10",tags:["DevOps"],notes:"",timeEntries:[{id:"te8",mins:120,desc:"Pipeline config",date:"2025-03-20"}],createdAt:now()},
-    {id:"t8",projectId:"p1",title:"Power BI – Executive dashboard",type:"dev_pb",phase:"Build",status:"Backlog",priority:"Medium",role:"Developer",estMins:480,loggedMins:0,dueDate:"2025-05-15",tags:["Reporting"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"t9",projectId:"p2",title:"Discovery call – HR stakeholders",type:"req_gather",phase:"Discovery",status:"Done",priority:"High",role:"Consultant",estMins:90,loggedMins:95,dueDate:"2025-03-20",tags:["Stakeholder"],notes:"CHRO + IT lead attended.",timeEntries:[{id:"te9",mins:95,desc:"Discovery call",date:"2025-03-19"}],createdAt:now()},
-    {id:"t10",projectId:"p2",title:"Copilot Studio – intents & entity design",type:"func_req",phase:"Design",status:"In Progress",priority:"Critical",role:"Solution Architect",estMins:180,loggedMins:90,dueDate:"2025-04-05",tags:["Copilot"],notes:"",timeEntries:[{id:"te10",mins:90,desc:"Intent mapping",date:"2025-03-28"}],createdAt:now()},
-    {id:"t11",projectId:"p2",title:"AI Builder – document processing model",type:"dev_aib",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:360,loggedMins:0,dueDate:"2025-05-01",tags:["AI Builder"],notes:"",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 1 – Setup & Design ──
-    {id:"las1",projectId:"p3",title:"1.1 Confirm scenario texts and response options with stakeholders",type:"req_gather",phase:"Discovery",status:"Done",priority:"High",role:"Functional Lead",estMins:30,loggedMins:0,dueDate:"2025-04-05",tags:["Stakeholder","Aminah"],notes:"Already done — review final wording.",timeEntries:[],createdAt:now()},
-    {id:"las2",projectId:"p3",title:"1.2 Review scoring mappings (0–5 per option per principle)",type:"func_req",phase:"Discovery",status:"Done",priority:"High",role:"Solution Architect",estMins:18,loggedMins:0,dueDate:"2025-04-05",tags:["Scoring"],notes:"Tables already provided. Confirm final values.",timeEntries:[],createdAt:now()},
-    {id:"las3",projectId:"p3",title:"1.3 Design report template (Word/HTML layout)",type:"doc",phase:"Design",status:"In Progress",priority:"High",role:"Solution Architect",estMins:60,loggedMins:0,dueDate:"2025-04-12",tags:["Report","Template"],notes:"Include: candidate ID, overall score, principle scores, scenario summary, dev recommendations.",timeEntries:[],createdAt:now()},
-    {id:"las4",projectId:"p3",title:"1.4 Set up SharePoint document library – AssessmentReports",type:"dev_gen",phase:"Design",status:"To Do",priority:"High",role:"Technical Lead",estMins:18,loggedMins:0,dueDate:"2025-04-12",tags:["SharePoint"],notes:"Restricted access — People Ops only.",timeEntries:[],createdAt:now()},
-    {id:"las5",projectId:"p3",title:"1.5 Set up SharePoint list – AssessmentResults (optional)",type:"dev_gen",phase:"Design",status:"Backlog",priority:"Medium",role:"Technical Lead",estMins:18,loggedMins:0,dueDate:"2025-04-14",tags:["SharePoint","Power BI"],notes:"For future Power BI analytics.",timeEntries:[],createdAt:now()},
-    {id:"las6",projectId:"p3",title:"1.6 Configure permissions (assessor access to library/list)",type:"dev_gen",phase:"Design",status:"To Do",priority:"High",role:"Technical Lead",estMins:18,loggedMins:0,dueDate:"2025-04-14",tags:["Security","Permissions"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las7",projectId:"p3",title:"1.7 Validate Power Automate environment and licenses",type:"nonfunc_req",phase:"Discovery",status:"Done",priority:"Medium",role:"Technical Lead",estMins:18,loggedMins:0,dueDate:"2025-04-07",tags:["Licensing"],notes:"",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 2 – Copilot Studio Build ──
-    {id:"las8",projectId:"p3",title:"2.1 Create topic, welcome message and consent question (Yes/No)",type:"dev_cs",phase:"Build",status:"Done",priority:"Critical",role:"Developer",estMins:30,loggedMins:0,dueDate:"2025-04-18",tags:["Copilot Studio","Consent"],notes:"Intro message + monitoring consent required before proceeding.",timeEntries:[],createdAt:now()},
-    {id:"las9",projectId:"p3",title:"2.2 Pre-declare all 26 topic-scoped scoring variables",type:"dev_cs",phase:"Build",status:"Done",priority:"Critical",role:"Developer",estMins:90,loggedMins:0,dueDate:"2025-04-18",tags:["Variables","Copilot Studio"],notes:"s1–s4 x 4 principles + choice variables + overall scores. Must be topic-scoped — no global vars.",timeEntries:[],createdAt:now()},
-    {id:"las10",projectId:"p3",title:"2.3 Build Scenario 1 (message, MC question, 5 branches + scoring)",type:"dev_cs",phase:"Build",status:"Done",priority:"Critical",role:"Developer",estMins:120,loggedMins:0,dueDate:"2025-04-22",tags:["Scenario 1","Copilot Studio"],notes:"A–E options. Assign s1_Care, s1_Means, s1_Ability, s1_Accountability, s1_Choice per branch.",timeEntries:[],createdAt:now()},
-    {id:"las11",projectId:"p3",title:"2.4 Build Scenario 2",type:"dev_cs",phase:"Build",status:"In Progress",priority:"Critical",role:"Developer",estMins:120,loggedMins:0,dueDate:"2025-04-25",tags:["Scenario 2","Copilot Studio"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las12",projectId:"p3",title:"2.5 Build Scenario 3",type:"dev_cs",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:120,loggedMins:0,dueDate:"2025-04-29",tags:["Scenario 3","Copilot Studio"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las13",projectId:"p3",title:"2.6 Build Scenario 4",type:"dev_cs",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:120,loggedMins:0,dueDate:"2025-05-02",tags:["Scenario 4","Copilot Studio"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las14",projectId:"p3",title:"2.7 Add timer logic (startTime, 28-min warning, 30-min auto-submit)",type:"dev_cs",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:60,loggedMins:0,dueDate:"2025-05-05",tags:["Timer","Copilot Studio"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las15",projectId:"p3",title:"2.8 Calculate overall scores and readiness level (Set Variable nodes)",type:"dev_cs",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:30,loggedMins:0,dueDate:"2025-05-06",tags:["Scoring","Readiness Band"],notes:"Bands: Emerging 0–2.0, Developing 2.1–3.5, Ready 3.6–4.5, Advanced 4.6–5.0.",timeEntries:[],createdAt:now()},
-    {id:"las16",projectId:"p3",title:"2.9 Build candidate completion message (score + principles display)",type:"dev_cs",phase:"Build",status:"To Do",priority:"Medium",role:"Developer",estMins:18,loggedMins:0,dueDate:"2025-05-06",tags:["Candidate Output"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las17",projectId:"p3",title:"2.10 Add Call Action node – trigger Power Automate with all variables",type:"dev_cs",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:30,loggedMins:0,dueDate:"2025-05-07",tags:["Power Automate","Integration"],notes:"Pass: CandidateEmail, OverallScore, ReadinessLevel, 4 principle scores, 4 scenario choices.",timeEntries:[],createdAt:now()},
-    {id:"las18",projectId:"p3",title:"2.11 End conversation node",type:"dev_cs",phase:"Build",status:"To Do",priority:"Low",role:"Developer",estMins:12,loggedMins:0,dueDate:"2025-05-07",tags:["Copilot Studio"],notes:"",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 3 – Power Automate & Reporting ──
-    {id:"las19",projectId:"p3",title:"3.1 Create flow trigger from Copilot Studio (GenerateLeaderReport)",type:"dev_pf",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:18,loggedMins:0,dueDate:"2025-05-09",tags:["Power Automate","Flow"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las20",projectId:"p3",title:"3.2 Define flow inputs and parse incoming data",type:"dev_pf",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:30,loggedMins:0,dueDate:"2025-05-09",tags:["Power Automate"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las21",projectId:"p3",title:"3.3 Build HTML report content / Word template with all required sections",type:"doc",phase:"Build",status:"To Do",priority:"Critical",role:"Functional Lead",estMins:180,loggedMins:0,dueDate:"2025-05-14",tags:["Report","Word","HTML"],notes:"Sections: candidate ID, overall score, principle scores, scenario summary, dev recommendations.",timeEntries:[],createdAt:now()},
-    {id:"las22",projectId:"p3",title:"3.4 Create file in SharePoint (Assessment_{email}_{timestamp}.pdf)",type:"dev_pf",phase:"Build",status:"To Do",priority:"Critical",role:"Developer",estMins:90,loggedMins:0,dueDate:"2025-05-16",tags:["SharePoint","PDF"],notes:"PDF conversion via OneDrive connector if needed.",timeEntries:[],createdAt:now()},
-    {id:"las23",projectId:"p3",title:"3.5 Send email to assessor (Aminah) with report link/attachment",type:"dev_pf",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:60,loggedMins:0,dueDate:"2025-05-16",tags:["Email","Assessor"],notes:"Recipient: Aminahm@hyperclear.tech",timeEntries:[],createdAt:now()},
-    {id:"las24",projectId:"p3",title:"3.6 Handle error/edge cases (missing email, incomplete, duplicates)",type:"dev_pf",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:90,loggedMins:0,dueDate:"2025-05-19",tags:["Error Handling"],notes:"Log and notify on exception. Idempotency check on email+timestamp.",timeEntries:[],createdAt:now()},
-    {id:"las25",projectId:"p3",title:"3.7 Save raw data to AssessmentResults SharePoint list (optional)",type:"dev_pf",phase:"Build",status:"Backlog",priority:"Medium",role:"Developer",estMins:42,loggedMins:0,dueDate:"2025-05-20",tags:["SharePoint","Analytics"],notes:"For future Power BI.",timeEntries:[],createdAt:now()},
-    {id:"las26",projectId:"p3",title:"3.8 Flow testing and debugging",type:"testing",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:90,loggedMins:0,dueDate:"2025-05-21",tags:["Testing","Power Automate"],notes:"",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 4 – Power BI (Future) ──
-    {id:"las27",projectId:"p3",title:"4.1 Connect Power BI to AssessmentResults SharePoint list",type:"dev_pb",phase:"Deploy",status:"Backlog",priority:"Low",role:"Developer",estMins:30,loggedMins:0,dueDate:"2025-06-06",tags:["Power BI","Future Phase"],notes:"Future phase — optional.",timeEntries:[],createdAt:now()},
-    {id:"las28",projectId:"p3",title:"4.2 Build radar chart, readiness gauge and bar charts",type:"dev_pb",phase:"Deploy",status:"Backlog",priority:"Low",role:"Developer",estMins:150,loggedMins:0,dueDate:"2025-06-13",tags:["Power BI","Dashboard"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las29",projectId:"p3",title:"4.3 Publish dashboard and embed link in assessor email",type:"dev_pb",phase:"Deploy",status:"Backlog",priority:"Low",role:"Developer",estMins:60,loggedMins:0,dueDate:"2025-06-16",tags:["Power BI"],notes:"",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 5 – Testing ──
-    {id:"las30",projectId:"p3",title:"5.1 Unit test each scenario branch (verify correct scores assigned)",type:"testing",phase:"Test",status:"To Do",priority:"Critical",role:"Technical Lead",estMins:90,loggedMins:0,dueDate:"2025-05-26",tags:["Unit Test","Scoring"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las31",projectId:"p3",title:"5.2 End-to-end test (complete assessment → report generated + emailed)",type:"testing",phase:"Test",status:"To Do",priority:"Critical",role:"Solution Architect",estMins:60,loggedMins:0,dueDate:"2025-05-27",tags:["E2E Test"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las32",projectId:"p3",title:"5.3 Edge case testing (timeout, missing email, duplicate, partial)",type:"testing",phase:"Test",status:"To Do",priority:"High",role:"Technical Lead",estMins:120,loggedMins:0,dueDate:"2025-05-28",tags:["Edge Cases","Testing"],notes:"No → exits. Timeout → auto-submit partial. Duplicate → idempotency check.",timeEntries:[],createdAt:now()},
-    {id:"las33",projectId:"p3",title:"5.4 Validate scoring arithmetic and readiness band assignment",type:"testing",phase:"Test",status:"To Do",priority:"High",role:"Functional Lead",estMins:30,loggedMins:0,dueDate:"2025-05-28",tags:["Scoring Validation"],notes:"Use dummy data sets.",timeEntries:[],createdAt:now()},
-    {id:"las34",projectId:"p3",title:"5.5 Performance test with 5 simultaneous assessments",type:"testing",phase:"Test",status:"To Do",priority:"Medium",role:"Technical Lead",estMins:60,loggedMins:0,dueDate:"2025-05-29",tags:["Performance","Load Test"],notes:"NFR1: handle peak 20/week without degradation.",timeEntries:[],createdAt:now()},
-    // ── LAS-001: Phase 6 – Deployment & Handover ──
-    {id:"las35",projectId:"p3",title:"6.1 Publish Copilot Studio agent to Teams channel / website",type:"deploy",phase:"Deploy",status:"To Do",priority:"High",role:"Technical Lead",estMins:30,loggedMins:0,dueDate:"2025-06-03",tags:["Deployment","Teams"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las36",projectId:"p3",title:"6.2 Create People Ops runbook (trigger, interpret reports, handle exceptions)",type:"doc",phase:"Deploy",status:"To Do",priority:"High",role:"Functional Lead",estMins:120,loggedMins:0,dueDate:"2025-06-04",tags:["Runbook","Documentation"],notes:"NFR11: must be usable by non-technical People Ops staff.",timeEntries:[],createdAt:now()},
-    {id:"las37",projectId:"p3",title:"6.3 Train Aminah on accessing reports and dashboard",type:"handover",phase:"Hypercare",status:"To Do",priority:"High",role:"Consultant",estMins:60,loggedMins:0,dueDate:"2025-06-05",tags:["Training","Aminah"],notes:"",timeEntries:[],createdAt:now()},
-    {id:"las38",projectId:"p3",title:"6.4 Final sign-off from Hyperclear Tech",type:"handover",phase:"Hypercare",status:"To Do",priority:"High",role:"Solution Architect",estMins:30,loggedMins:0,dueDate:"2025-06-06",tags:["Sign-off"],notes:"",timeEntries:[],createdAt:now()},
-  ],
-  logs:[
-    {id:"l1",projectId:"p1",taskId:"t1",type:"Workshop",summary:"Requirements workshop – Sales & Order Management",mins:135,billable:true,date:"2025-02-09",createdAt:now()},
-    {id:"l2",projectId:"p1",taskId:"t2",type:"Document",summary:"Functional spec v1.0 delivered and reviewed",mins:260,billable:true,date:"2025-02-19",createdAt:now()},
-    {id:"l3",projectId:"p1",taskId:null,type:"Email",summary:"Stakeholder update – kick-off summary",mins:30,billable:false,date:"2025-02-05",createdAt:now()},
-    {id:"l4",projectId:"p2",taskId:"t9",type:"Call",summary:"Discovery call – HR chatbot scope",mins:95,billable:true,date:"2025-03-19",createdAt:now()},
-  ],
-  comms:[
-    {id:"c1",type:"Teams Call",summary:"Kick-off call with Contoso stakeholders",contact:"Sarah van der Berg",projectId:"p1",date:"2025-02-03",time:"09:00",durationMins:60,notes:"Discussed scope, timelines, and key contacts.",createdAt:now()},
-    {id:"c2",type:"Email",summary:"Sent project charter for review",contact:"Contoso PMO",projectId:"p1",date:"2025-02-06",time:"",durationMins:null,notes:"",createdAt:now()},
-    {id:"c3",type:"On-Site Meeting",summary:"Discovery workshop – HR chatbot requirements",contact:"CHRO + IT Lead",projectId:"p2",date:"2025-03-19",time:"10:00",durationMins:90,notes:"Covered all HR self-service scenarios.",createdAt:now()},
-  ]
-};
+let DB={projects:[],tasks:[],logs:[],comms:[]};
 
 // ─── TIMER ────────────────────────────────────────────────────────────────────
 let TIM={taskId:null,startedAt:null,elapsed:0,iv:null};
@@ -1183,20 +1128,36 @@ function saveComms(id){
 }
 
 // ─── AI GENERATOR ─────────────────────────────────────────────────────────────
-let AI_KEY='', AI_PROJ={}, AI_TASKS=[], AI_SEL={};
+let AI_KEY='', AI_PROVIDER='deepseek', AI_PROJ={}, AI_TASKS=[], AI_SEL={};
+
+const AI_PROVIDERS={
+  deepseek:{ label:"DeepSeek", url:"https://api.deepseek.com/chat/completions",  model:"deepseek-chat",       hint:"platform.deepseek.com", auth:"Bearer" },
+  openai:  { label:"OpenAI",   url:"https://api.openai.com/v1/chat/completions",  model:"gpt-4o",              hint:"platform.openai.com",   auth:"Bearer" },
+  grok:    { label:"Grok (xAI)",url:"https://api.x.ai/v1/chat/completions",       model:"grok-3",              hint:"console.x.ai",          auth:"Bearer" },
+  anthropic:{ label:"Claude",  url:"https://api.anthropic.com/v1/messages",       model:"claude-sonnet-4-5",   hint:"console.anthropic.com", auth:"x-api-key" },
+  gemini:  { label:"Gemini",   url:"",                                             model:"gemini-1.5-pro",      hint:"aistudio.google.com",   auth:"key" },
+};
 
 function openAI(){ AI_PROJ={}; AI_TASKS=[]; AI_SEL={}; renderAIStep1(); openM("mod-ai"); }
 
 function renderAIStep1(){
   var keyHint = AI_KEY ? '<span style="color:var(--ok);font-size:11px">✓ Key saved for session</span>' : '';
+  var providerBtns = Object.keys(AI_PROVIDERS).map(function(k){
+    var p=AI_PROVIDERS[k];
+    var active=k===AI_PROVIDER;
+    return '<button type="button" onclick="AI_PROVIDER=\''+k+'\';renderAIStep1()" style="padding:6px 12px;border-radius:6px;border:1px solid '+(active?'var(--accent)':'var(--border)')+';background:'+(active?'rgba(124,110,245,.15)':'none')+';color:'+(active?'var(--accent)':'var(--mid)')+';font-size:12px;font-weight:'+(active?'700':'400')+';font-family:inherit;cursor:pointer">'+p.label+'</button>';
+  }).join("");
+  var prov=AI_PROVIDERS[AI_PROVIDER];
   document.getElementById("ai-body").innerHTML =
     '<div class="aiinfo"><span style="font-size:15px;flex-shrink:0">✦</span>' +
-    '<span>Paste your project brief and DeepSeek will generate the project, all tasks, phases, priorities and time estimates. Review and edit everything before anything is created.</span></div>' +
-    '<div class="field"><label class="flabel">DeepSeek API Key ' + keyHint + '</label>' +
-    '<input class="inp" id="ai-key" type="password" placeholder="sk-..." value="' + esc(AI_KEY) + '" style="font-family:monospace"/>' +
-    '<div style="color:var(--dim);font-size:11px;margin-top:4px">Your key is never stored — session memory only. Get yours at platform.deepseek.com</div></div>' +
+    '<span>Paste your project brief and your chosen AI will generate the full project plan, tasks, phases, priorities and estimates. Review and edit before anything is created.</span></div>' +
+    '<div class="field"><label class="flabel">AI Provider</label>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap">' + providerBtns + '</div></div>' +
+    '<div class="field"><label class="flabel">API Key ' + keyHint + '</label>' +
+    '<input class="inp" id="ai-key" type="password" placeholder="Your '+prov.label+' API key" value="' + esc(AI_KEY) + '" style="font-family:monospace"/>' +
+    '<div style="color:var(--dim);font-size:11px;margin-top:4px">Never stored — session memory only. Get your key at <a href="https://'+prov.hint+'" target="_blank" style="color:var(--accent)">'+prov.hint+'</a></div></div>' +
     '<div class="field"><label class="flabel">Project Brief</label>' +
-    '<textarea class="ta" id="ai-br" style="min-height:160px" placeholder="Describe the project: client industry, objectives, which Power Platform tools (Power Apps, Power Automate, Power BI, Copilot Studio, AI Builder), integrations needed, timeline, team size, any constraints or must-haves..."></textarea></div>' +
+    '<textarea class="ta" id="ai-br" style="min-height:150px" placeholder="Describe the project: client, objectives, Power Platform components, integrations, timeline, constraints..."></textarea></div>' +
     '<div class="ffoot"><button class="btn bg" onclick="closeM(\'mod-ai\')">Cancel</button>' +
     '<button class="btn bp" id="ai-gb" onclick="runAI()"><span>✦</span> Generate Project</button></div>' +
     '<div id="ai-res"></div>';
@@ -1205,57 +1166,66 @@ function renderAIStep1(){
 async function runAI(){
   var key = (document.getElementById("ai-key").value||"").trim();
   var brief = (document.getElementById("ai-br").value||"").trim();
-  if(!key){ alert("Enter your Anthropic API key first"); return; }
+  var prov = AI_PROVIDERS[AI_PROVIDER];
+  if(!key){ alert("Enter your "+prov.label+" API key first"); return; }
   if(!brief){ alert("Paste a project brief first"); return; }
   AI_KEY = key;
   var btn = document.getElementById("ai-gb");
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Generating...';
-  document.getElementById("ai-res").innerHTML =
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Generating...';
+  document.getElementById("ai-res").innerHTML=
     '<div style="display:flex;align-items:center;gap:9px;color:var(--mid);font-size:13px;margin-top:14px">' +
-    '<span class="spinner"></span> Analysing brief and generating project plan...</div>';
+    '<span class="spinner"></span> Analysing brief with '+prov.label+'...</div>';
 
-  var sys = 'You are an expert Microsoft Power Platform Solution Architect. Given a project brief, produce a complete project plan. Return ONLY valid JSON — no markdown fences, no explanation, nothing else. Schema: {"project":{"name":"string","client":"string","code":"string (e.g. ABC-001)","description":"string","phase":"Discovery|Design|Build|Test|Deploy|Hypercare","status":"Active","billing":true,"hourlyRate":1500,"currency":"ZAR","startDate":"YYYY-MM-DD","targetDate":"YYYY-MM-DD","totalBudgetHours":number},"tasks":[{"title":"string","type":"func_req|nonfunc_req|arch|alm|req_gather|doc|comm|dev_pa|dev_pf|dev_pb|dev_cs|dev_aib|dev_gen|testing|uat|deploy|handover|billing","phase":"Discovery|Design|Build|Test|Deploy|Hypercare","priority":"Critical|High|Medium|Low","role":"Solution Architect|Technical Lead|Functional Lead|Consultant|Developer|Reviewer","estMins":number,"tags":[],"notes":"string"}]}. Include 20-35 tasks covering the full project lifecycle: discovery, requirements, architecture, ALM, development per component mentioned, testing, UAT, deployment, documentation, handover. Estimate realistic durations.';
+  var sys='You are an expert Microsoft Power Platform Solution Architect. Given a project brief, produce a complete project plan. Return ONLY valid JSON — no markdown fences, no explanation, nothing else. Schema: {"project":{"name":"string","client":"string","code":"string (e.g. ABC-001)","description":"string","phase":"Discovery|Design|Build|Test|Deploy|Hypercare","status":"Active","billing":true,"hourlyRate":1500,"currency":"ZAR","startDate":"YYYY-MM-DD","targetDate":"YYYY-MM-DD","totalBudgetHours":number},"tasks":[{"title":"string","type":"func_req|nonfunc_req|arch|alm|req_gather|doc|comm|dev_pa|dev_pf|dev_pb|dev_cs|dev_aib|dev_gen|testing|uat|deploy|handover|billing","phase":"Discovery|Design|Build|Test|Deploy|Hypercare","priority":"Critical|High|Medium|Low","role":"Solution Architect|Technical Lead|Functional Lead|Consultant|Developer|Reviewer","estMins":number,"tags":[],"notes":"string"}]}. Include 20-35 tasks covering full lifecycle: discovery, requirements, architecture, ALM, dev per component, testing, UAT, deployment, docs, handover.';
 
-  try {
-    var res = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + key
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        max_tokens: 4096,
-        messages: [
-          { role: "system", content: sys },
-          { role: "user", content: "Project brief:\n" + brief }
-        ]
-      })
-    });
-    if(!res.ok){
-      var errData = await res.json().catch(function(){ return {}; });
-      throw new Error("API error " + res.status + ": " + (errData.error&&errData.error.message || res.statusText));
+  try{
+    var res, text;
+    if(AI_PROVIDER==='anthropic'){
+      // Anthropic uses different request/response format
+      res = await fetch("https://api.anthropic.com/v1/messages",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body:JSON.stringify({model:prov.model,max_tokens:4096,system:sys,messages:[{role:"user",content:"Project brief:\n"+brief}]})
+      });
+      if(!res.ok) throw new Error("API error "+res.status+": "+(await res.json().catch(function(){return{};})).error?.message||res.statusText);
+      var d=await res.json();
+      text=(d.content||[]).map(function(b){return b.text||"";}).join("");
+    } else if(AI_PROVIDER==='gemini'){
+      // Gemini uses its own endpoint format
+      var geminiUrl="https://generativelanguage.googleapis.com/v1beta/models/"+prov.model+":generateContent?key="+key;
+      res = await fetch(geminiUrl,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text:sys+"\n\nProject brief:\n"+brief}]}]})
+      });
+      if(!res.ok) throw new Error("API error "+res.status);
+      var gd=await res.json();
+      text=gd.candidates?.[0]?.content?.parts?.[0]?.text||"";
+    } else {
+      // OpenAI-compatible: DeepSeek, OpenAI, Grok
+      res = await fetch(prov.url,{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+        body:JSON.stringify({model:prov.model,max_tokens:4096,messages:[{role:"system",content:sys},{role:"user",content:"Project brief:\n"+brief}]})
+      });
+      if(!res.ok) throw new Error("API error "+res.status+": "+((await res.json().catch(function(){return{};})).error?.message||res.statusText));
+      var od=await res.json();
+      text=(od.choices||[])[0]?.message?.content||"";
     }
-    var data = await res.json();
-    var text = ((data.choices||[])[0]||{}).message&&data.choices[0].message.content || "";
-    var clean = text.replace(/```json[\s\S]*?```/g, function(m){ return m.slice(7,-3); }).replace(/```/g,"").trim();
-    // extract first {...} block robustly
-    var start = clean.indexOf("{"), end = clean.lastIndexOf("}");
-    if(start===-1||end===-1) throw new Error("No JSON object found in response");
-    var parsed = JSON.parse(clean.slice(start, end+1));
-    if(!parsed.project||!parsed.tasks) throw new Error("Unexpected JSON structure");
-    AI_PROJ = parsed.project;
-    AI_TASKS = parsed.tasks.map(function(t){
-      return Object.assign({},t,{id:uid(),loggedMins:0,dueDate:"",timeEntries:[],createdAt:now(),status:"Backlog",tags:Array.isArray(t.tags)?t.tags:[]});
-    });
-    AI_SEL = {};
-    AI_TASKS.forEach(function(t){ AI_SEL[t.id]=true; });
+    var clean=text.replace(/```json[\s\S]*?```/g,function(m){return m.slice(7,-3);}).replace(/```/g,"").trim();
+    var start=clean.indexOf("{"),end=clean.lastIndexOf("}");
+    if(start===-1||end===-1) throw new Error("No JSON found in response — try again");
+    var parsed=JSON.parse(clean.slice(start,end+1));
+    if(!parsed.project||!parsed.tasks) throw new Error("Unexpected response structure");
+    AI_PROJ=parsed.project;
+    AI_TASKS=parsed.tasks.map(function(t){return Object.assign({},t,{id:uid(),loggedMins:0,dueDate:"",timeEntries:[],createdAt:now(),status:"Backlog",tags:Array.isArray(t.tags)?t.tags:[]});});
+    AI_SEL={};AI_TASKS.forEach(function(t){AI_SEL[t.id]=true;});
     renderAIReview();
-  } catch(e) {
-    document.getElementById("ai-res").innerHTML =
-      '<div style="background:#3A1A1A;border:1px solid #E74C3C44;border-radius:8px;padding:12px 14px;margin-top:13px;color:var(--err);font-size:13px">' +
-      '<strong>Error:</strong> ' + esc(e.message) +
-      '<br><span style="color:var(--dim);font-size:11px;margin-top:6px;display:block">Check your API key is valid and has credits. The key must start with sk-ant-</span></div>';
+  }catch(e){
+    document.getElementById("ai-res").innerHTML=
+      '<div style="background:var(--s3);border:1px solid var(--err);border-radius:8px;padding:12px 14px;margin-top:13px;color:var(--err);font-size:13px">' +
+      '<strong>Error:</strong> '+esc(e.message)+'<br>' +
+      '<span style="color:var(--dim);font-size:11px;margin-top:5px;display:block">Check your '+prov.label+' API key and that it has available credits.</span></div>';
     btn.disabled=false; btn.innerHTML='<span>✦</span> Generate Project';
   }
 }
@@ -1421,10 +1391,13 @@ function bootFirebase(cfg){
         FB_UID=user.uid;
         document.getElementById("mod-auth").classList.remove("open");
         document.getElementById("auth-error").textContent="";
+        const b=document.getElementById("demo-banner");
+        if(b)b.style.display="none";
         updateAuthUI(user);
         loadFromFirebase(user.uid);
       } else {
         updateAuthUI(null);
+        // Show sign-in modal over current view (blank or cached)
         document.getElementById("mod-auth").classList.add("open");
         setSaveStatus("Please sign in","var(--warn)");
       }
@@ -1445,9 +1418,28 @@ function signInGoogle(){
   });
 }
 
+function loadDemo(){
+  closeM("mod-auth");
+  FB_ENABLED=false;
+  loadDemoData();
+  const b=document.getElementById("demo-banner");
+  if(b) b.style.display="flex";
+  setSaveStatus("Demo mode — sign in to save","var(--warn)");
+  renderSB(); renderPort();
+}
+
+function exitDemo(){
+  loadDemoData();
+  const b=document.getElementById("demo-banner");
+  if(b) b.style.display="flex";
+  document.getElementById("mod-auth").classList.add("open");
+  setSaveStatus("Demo mode — sign in to save","var(--warn)");
+}
+
 function signOut(){
   if(!FAUTH)return;
   if(!confirm("Sign out?"))return;
+  localStorage.removeItem("sa_db_cache");
   FAUTH.signOut();
 }
 
@@ -1470,18 +1462,20 @@ function updateAuthUI(user){
 
 async function loadFromFirebase(uid){
   setSaveStatus("Syncing...","var(--warn)");
+  // Clear any cached data from a previous user before loading
+  localStorage.removeItem("sa_db_cache");
   try{
     const doc=await FSDB.collection("users").doc(uid).collection("data").doc("main").get();
     if(doc.exists){
       const d=doc.data();
-      if(d.projects&&d.projects.length) DB.projects=d.projects;
-      if(d.tasks&&d.tasks.length) DB.tasks=d.tasks;
+      if(d.projects) DB.projects=d.projects;
+      if(d.tasks) DB.tasks=d.tasks;
       if(d.logs) DB.logs=d.logs;
       if(d.comms) DB.comms=d.comms;
-      // Cache to localStorage so next refresh is instant
-      localStorage.setItem("sa_db_cache", JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms}));
+      localStorage.setItem("sa_db_cache",JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms}));
     } else {
-      // First time — save seed data
+      // Brand new user — start with empty data, no seed cards
+      DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
       await saveToFirebase(true);
     }
     renderSB(); renderPort();
@@ -1517,6 +1511,25 @@ async function saveToFirebase(immediate){
   SAVING=false;
 }
 
+function openFirebaseSettings(){
+  // Pre-fill existing config if saved
+  try{
+    const stored=localStorage.getItem("sa_fb_config");
+    if(stored){
+      const cfg=JSON.parse(stored);
+      setTimeout(function(){
+        if(document.getElementById("fb-apiKey")) document.getElementById("fb-apiKey").value=cfg.apiKey||"";
+        if(document.getElementById("fb-projectId")) document.getElementById("fb-projectId").value=cfg.projectId||"";
+        if(document.getElementById("fb-authDomain")) document.getElementById("fb-authDomain").value=cfg.authDomain||"";
+        if(document.getElementById("fb-appId")) document.getElementById("fb-appId").value=cfg.appId||"";
+        if(document.getElementById("fb-storageBucket")) document.getElementById("fb-storageBucket").value=cfg.storageBucket||"";
+      },50);
+    }
+  }catch(e){}
+  openM("mod-firebase");
+  closeSB();
+}
+
 function skipFirebase(){
   closeM("mod-firebase");
   FB_ENABLED=false;
@@ -1527,37 +1540,62 @@ function skipFirebase(){
 // Auto-save hook — called after every data mutation
 function autoSave(){ saveToFirebase(false); }
 
+// ─── DEMO DATA ────────────────────────────────────────────────────────────────
+function loadDemoData(){
+  DB.projects=[
+    {id:"demo1",name:"Sample Power Platform Project",client:"Demo Client",code:"DEMO-001",description:"This is a demo project showing how SA Command Centre works. Sign in with Google to create your own projects and save your real data.",phase:"Build",status:"Active",billing:true,hourlyRate:1500,currency:"ZAR",startDate:"2025-01-01",targetDate:"2025-06-30",totalBudgetHours:200,createdAt:now(),color:"#7B6CF6"},
+  ];
+  DB.tasks=[
+    {id:"dtA",projectId:"demo1",title:"Discovery workshop with stakeholders",type:"req_gather",phase:"Discovery",status:"Done",priority:"High",role:"Solution Architect",estMins:120,loggedMins:135,dueDate:"2025-01-15",tags:["Stakeholder"],notes:"User stories captured.",timeEntries:[{id:"dteA",mins:135,desc:"Workshop session",date:"2025-01-14"}],createdAt:now()},
+    {id:"dtB",projectId:"demo1",title:"Solution architecture design",type:"arch",phase:"Design",status:"Done",priority:"Critical",role:"Solution Architect",estMins:240,loggedMins:220,dueDate:"2025-02-01",tags:[],notes:"",timeEntries:[{id:"dteB",mins:220,desc:"Architecture doc",date:"2025-01-28"}],createdAt:now()},
+    {id:"dtC",projectId:"demo1",title:"ALM setup – Dev/Test/Prod pipelines",type:"alm",phase:"Build",status:"In Progress",priority:"High",role:"Technical Lead",estMins:180,loggedMins:90,dueDate:"2025-03-01",tags:["DevOps"],notes:"",timeEntries:[{id:"dteC",mins:90,desc:"Pipeline config",date:"2025-02-20"}],createdAt:now()},
+    {id:"dtD",projectId:"demo1",title:"Core app development – Sprint 1",type:"dev_pa",phase:"Build",status:"In Progress",priority:"Critical",role:"Developer",estMins:960,loggedMins:480,dueDate:"2025-04-01",tags:["Sprint 1"],notes:"",timeEntries:[{id:"dteD",mins:480,desc:"Sprint 1 build",date:"2025-03-15"}],createdAt:now()},
+    {id:"dtE",projectId:"demo1",title:"Power Automate – approval flow",type:"dev_pf",phase:"Build",status:"To Do",priority:"High",role:"Developer",estMins:240,loggedMins:0,dueDate:"2025-04-15",tags:[],notes:"",timeEntries:[],createdAt:now()},
+    {id:"dtF",projectId:"demo1",title:"UAT with key users",type:"uat",phase:"Test",status:"Backlog",priority:"High",role:"Functional Lead",estMins:300,loggedMins:0,dueDate:"2025-05-15",tags:[],notes:"",timeEntries:[],createdAt:now()},
+    {id:"dtG",projectId:"demo1",title:"Deployment to production",type:"deploy",phase:"Deploy",status:"Backlog",priority:"Critical",role:"Technical Lead",estMins:120,loggedMins:0,dueDate:"2025-06-01",tags:[],notes:"",timeEntries:[],createdAt:now()},
+    {id:"dtH",projectId:"demo1",title:"Handover and training",type:"handover",phase:"Hypercare",status:"Backlog",priority:"Medium",role:"Consultant",estMins:180,loggedMins:0,dueDate:"2025-06-20",tags:[],notes:"",timeEntries:[],createdAt:now()},
+  ];
+  DB.logs=[
+    {id:"dlA",projectId:"demo1",taskId:"dtA",type:"Workshop",summary:"Discovery workshop completed — all requirements captured",mins:135,billable:true,date:"2025-01-14",createdAt:now()},
+    {id:"dlB",projectId:"demo1",taskId:null,type:"Email",summary:"Sent solution architecture document to client for review",mins:20,billable:false,date:"2025-01-29",createdAt:now()},
+  ];
+  DB.comms=[
+    {id:"dcA",type:"Teams Call",summary:"Project kick-off call",contact:"Client Sponsor",projectId:"demo1",date:"2025-01-07",time:"09:00",durationMins:60,notes:"Scope and timeline agreed.",createdAt:now()},
+    {id:"dcB",type:"Email",summary:"Weekly status update sent",contact:"Client PM",projectId:"demo1",date:"2025-02-10",time:"",durationMins:null,notes:"",createdAt:now()},
+  ];
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function(){
   try{
-    // 1. Try to load cached DB instantly so page never shows blank
-    const cached=localStorage.getItem("sa_db_cache");
-    if(cached){
-      const d=JSON.parse(cached);
-      if(d.projects&&d.projects.length) DB.projects=d.projects;
-      if(d.tasks&&d.tasks.length) DB.tasks=d.tasks;
-      if(d.logs) DB.logs=d.logs;
-      if(d.comms) DB.comms=d.comms;
-    }
-
-    // 2. Render immediately from cache (or seed data)
-    renderSB(); renderPort();
-
-    // 3. Then connect Firebase in the background to sync latest
     const stored=localStorage.getItem("sa_fb_config");
-    if(stored){
-      const cfg=JSON.parse(stored);
-      if(cfg.apiKey&&cfg.projectId){
-        setSaveStatus("Connecting...","var(--warn)");
-        bootFirebase(cfg);
-        return;
+    const hasFBConfig=stored&&JSON.parse(stored).apiKey;
+
+    if(hasFBConfig){
+      // Has Firebase config — load cache instantly, then sync
+      const cached=localStorage.getItem("sa_db_cache");
+      if(cached){
+        const d=JSON.parse(cached);
+        if(d.projects) DB.projects=d.projects;
+        if(d.tasks) DB.tasks=d.tasks;
+        if(d.logs) DB.logs=d.logs;
+        if(d.comms) DB.comms=d.comms;
+        renderSB(); renderPort();
+      } else {
+        DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
+        renderSB(); renderPort();
       }
+      bootFirebase(JSON.parse(stored));
+      return;
     }
   }catch(e){ console.warn("Init error:",e); }
 
-  // No Firebase config — show setup modal
-  document.getElementById("mod-firebase").classList.add("open");
-  setSaveStatus("","");
+  // No Firebase config — show demo, nudge to connect via Settings
+  loadDemoData();
+  const b=document.getElementById("demo-banner");
+  if(b) b.style.display="flex";
+  renderSB(); renderPort();
+  setSaveStatus("Demo mode — not saving","var(--warn)");
 })();
 </script>
 </body>
