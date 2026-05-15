@@ -360,7 +360,7 @@ nav{padding:10px 8px;flex:1}
     </div>
     <div id="auth-panel" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:2px">
       <div id="auth-user-btn" style="display:none;align-items:center;gap:8px;padding:9px 11px;font-size:12px;color:var(--text)"></div>
-      <button id="auth-signin-btn" onclick="document.getElementById('mod-auth').classList.add('open')" style="display:none;width:100%;background:none;border:none;padding:9px 11px;font-size:12px;color:var(--accent);font-weight:700;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px">
+      <button id="auth-signin-btn" onclick="const nc=document.getElementById('auth-noconfig');if(nc)nc.style.display=FAUTH?'none':'block';const gb=document.getElementById('google-signin-btn');if(gb)gb.style.opacity=FAUTH?'1':'0.4';document.getElementById('mod-auth').classList.add('open')" style="display:none;width:100%;background:none;border:none;padding:9px 11px;font-size:12px;color:var(--accent);font-weight:700;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         Sign In
       </button>
@@ -468,12 +468,13 @@ nav{padding:10px 8px;flex:1}
   <div class="modal" style="max-width:360px;text-align:center">
     <div style="width:52px;height:52px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--a3));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px">⚡</div>
     <div class="mtitle" style="margin-bottom:6px">SA Command Centre</div>
-    <div style="color:var(--mid);font-size:13px;margin-bottom:24px;line-height:1.6">Sign in with your Google account to load and sync your data.</div>
-    <button onclick="signInGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='var(--s2)'">
+    <div style="color:var(--mid);font-size:13px;margin-bottom:24px;line-height:1.6">Sign in with Google to get started. Your data saves locally — connect cloud sync anytime from Settings.</div>
+    <button onclick="signInGoogle()" id="google-signin-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s" onmouseover="this.style.background='var(--s3)'" onmouseout="this.style.background='var(--s2)'">
       <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continue with Google
     </button>
-    <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
+    <div id="auth-error" style="color:var(--err);font-size:12px;margin-top:12px;min-height:18px"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:16px 0 12px">
       <div style="flex:1;height:1px;background:var(--border)"></div>
       <span style="color:var(--dim);font-size:11px">or</span>
       <div style="flex:1;height:1px;background:var(--border)"></div>
@@ -482,7 +483,6 @@ nav{padding:10px 8px;flex:1}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Try Demo — no login needed
     </button>
-    <div id="auth-error" style="color:var(--err);font-size:12px;margin-top:14px;min-height:18px"></div>
   </div>
 </div>
 
@@ -1384,7 +1384,8 @@ function initFirebase(){
 function bootFirebase(cfg){
   try{
     if(!firebase.apps.length) firebase.initializeApp(cfg);
-    FB=firebase; FSDB=firebase.firestore(); FAUTH=firebase.auth();
+    FB=firebase; FAUTH=firebase.auth();
+    try{ FSDB=firebase.firestore(); }catch(e){ FSDB=null; }
     FB_ENABLED=true;
     closeM("mod-firebase");
     FAUTH.onAuthStateChanged(function(user){
@@ -1395,17 +1396,16 @@ function bootFirebase(cfg){
         const b=document.getElementById("demo-banner");
         if(b)b.style.display="none";
         updateAuthUI(user);
-        loadFromFirebase(user.uid);
+        loadUserData(user.uid);
       } else {
         updateAuthUI(null);
-        // Show sign-in modal over current view (blank or cached)
         document.getElementById("mod-auth").classList.add("open");
         setSaveStatus("Please sign in","var(--warn)");
       }
     });
   }catch(e){
     console.error("Firebase boot error:",e);
-    setSaveStatus("Firebase error — working locally","var(--err)");
+    setSaveStatus("Firebase error","var(--err)");
     renderSB();renderPort();
   }
 }
@@ -1413,10 +1413,97 @@ function bootFirebase(cfg){
 function signInGoogle(){
   const errEl=document.getElementById("auth-error");
   errEl.textContent="";
+  if(!FAUTH){
+    try{
+      const stored=localStorage.getItem("sa_fb_config");
+      if(stored){ bootFirebase(JSON.parse(stored)); setTimeout(signInGoogle,800); }
+      else{ errEl.textContent="Connect Firebase first via 🔥 Firebase Settings in the sidebar."; }
+    }catch(e){ errEl.textContent="Connect Firebase first via Settings."; }
+    return;
+  }
   const provider=new firebase.auth.GoogleAuthProvider();
-  FAUTH.signInWithPopup(provider).catch(function(e){
-    errEl.textContent=e.message;
-  });
+  FAUTH.signInWithPopup(provider).catch(function(e){ errEl.textContent=e.message; });
+}
+
+function loadUserData(uid){
+  setSaveStatus("Loading...","var(--warn)");
+  const cacheKey="sa_data_"+uid;
+  try{
+    const cached=localStorage.getItem(cacheKey)||localStorage.getItem("sa_db_cache");
+    if(cached){
+      const d=JSON.parse(cached);
+      if(d.projects) DB.projects=d.projects;
+      if(d.tasks) DB.tasks=d.tasks;
+      if(d.logs) DB.logs=d.logs;
+      if(d.comms) DB.comms=d.comms;
+      renderSB(); renderPort();
+      setSaveStatus("Loaded ✓","var(--ok)");
+    } else {
+      DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
+      renderSB(); renderPort();
+    }
+  }catch(e){ renderSB(); renderPort(); }
+  // Sync Firestore in background if available
+  if(FSDB){
+    FSDB.collection("users").doc(uid).collection("data").doc("main").get().then(function(doc){
+      if(doc.exists){
+        const d=doc.data();
+        if(d.projects) DB.projects=d.projects;
+        if(d.tasks) DB.tasks=d.tasks;
+        if(d.logs) DB.logs=d.logs;
+        if(d.comms) DB.comms=d.comms;
+        saveLocal(uid);
+        renderSB(); renderPort();
+        setSaveStatus("Synced from cloud ✓","var(--ok)");
+      } else { saveToFirebase(true); }
+    }).catch(function(){ setSaveStatus("Saved locally","var(--ok)"); });
+  } else {
+    setSaveStatus("Saved locally — connect cloud via 🔥 Settings","var(--ok)");
+  }
+}
+
+function saveLocal(uid){
+  try{
+    const data=JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms});
+    localStorage.setItem("sa_data_"+(uid||"anon"),data);
+    localStorage.setItem("sa_db_cache",data);
+  }catch(e){}
+}
+
+async function saveToFirebase(immediate){
+  saveLocal(FB_UID||"anon");
+  if(!FSDB||!FB_UID){ setSaveStatus("Saved locally","var(--ok)"); return; }
+  if(!immediate){
+    clearTimeout(SAVE_TIMER);
+    SAVE_TIMER=setTimeout(()=>saveToFirebase(true),1500);
+    setSaveStatus("Saving...","var(--warn)");
+    return;
+  }
+  if(SAVING) return;
+  SAVING=true;
+  try{
+    await FSDB.collection("users").doc(FB_UID).collection("data").doc("main").set({
+      projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms,updatedAt:new Date().toISOString()
+    });
+    setSaveStatus("All changes saved ✓","var(--ok)");
+  }catch(e){
+    setSaveStatus("Saved locally (cloud unavailable)","var(--warn)");
+  }
+  SAVING=false;
+}
+
+function skipFirebase(){
+  closeM("mod-firebase");
+  setSaveStatus("Saved locally","var(--ok)");
+}
+
+function autoSave(){ saveToFirebase(false); }
+
+function signOut(){
+  if(!FAUTH) return;
+  if(!confirm("Sign out?")) return;
+  saveLocal(FB_UID);
+  FAUTH.signOut();
 }
 
 function loadDemo(){
@@ -1435,81 +1522,6 @@ function exitDemo(){
   if(b) b.style.display="flex";
   document.getElementById("mod-auth").classList.add("open");
   setSaveStatus("Demo mode — sign in to save","var(--warn)");
-}
-
-function signOut(){
-  if(!FAUTH)return;
-  if(!confirm("Sign out?"))return;
-  localStorage.removeItem("sa_db_cache");
-  FAUTH.signOut();
-}
-
-function updateAuthUI(user){
-  const userBtn=document.getElementById("auth-user-btn");
-  const signInBtn=document.getElementById("auth-signin-btn");
-  if(!userBtn||!signInBtn)return;
-  if(user){
-    userBtn.style.display="flex";
-    signInBtn.style.display="none";
-    userBtn.innerHTML=
-      `<img src="${user.photoURL||""}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);flex-shrink:0" onerror="this.style.display='none'"/>`+
-      `<div style="flex:1;min-width:0"><div style="font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(user.displayName||user.email||"Signed in")}</div><div style="font-size:10px;color:var(--dim);margin-top:1px">${esc(user.email||"")}</div></div>`+
-      `<button onclick="signOut()" title="Sign out" style="background:var(--s3);border:none;color:var(--mid);cursor:pointer;padding:5px 8px;border-radius:5px;font-size:11px;flex-shrink:0;font-family:inherit" onmouseover="this.style.color='var(--err)'" onmouseout="this.style.color='var(--mid)'">Sign out</button>`;
-  }else{
-    userBtn.style.display="none";
-    signInBtn.style.display="flex";
-  }
-}
-
-async function loadFromFirebase(uid){
-  setSaveStatus("Syncing...","var(--warn)");
-  // Clear any cached data from a previous user before loading
-  localStorage.removeItem("sa_db_cache");
-  try{
-    const doc=await FSDB.collection("users").doc(uid).collection("data").doc("main").get();
-    if(doc.exists){
-      const d=doc.data();
-      if(d.projects) DB.projects=d.projects;
-      if(d.tasks) DB.tasks=d.tasks;
-      if(d.logs) DB.logs=d.logs;
-      if(d.comms) DB.comms=d.comms;
-      localStorage.setItem("sa_db_cache",JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms}));
-    } else {
-      // Brand new user — start with empty data, no seed cards
-      DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
-      await saveToFirebase(true);
-    }
-    renderSB(); renderPort();
-    setSaveStatus("All changes saved","var(--ok)");
-  }catch(e){
-    setSaveStatus("Sync failed — showing cached data","var(--err)");
-    console.error("Firebase load error:",e);
-    renderSB(); renderPort();
-  }
-}
-
-async function saveToFirebase(immediate){
-  if(!FB_ENABLED||!FB_UID||!FSDB)return;
-  if(!immediate){
-    clearTimeout(SAVE_TIMER);
-    SAVE_TIMER=setTimeout(()=>saveToFirebase(true),1500);
-    setSaveStatus("Saving...","var(--warn)");
-    return;
-  }
-  if(SAVING)return;
-  SAVING=true;
-  setSaveStatus("Saving...","var(--warn)");
-  try{
-    const data={projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms,updatedAt:new Date().toISOString()};
-    await FSDB.collection("users").doc(FB_UID).collection("data").doc("main").set(data);
-    // Keep local cache in sync
-    localStorage.setItem("sa_db_cache", JSON.stringify({projects:DB.projects,tasks:DB.tasks,logs:DB.logs,comms:DB.comms}));
-    setSaveStatus("All changes saved","var(--ok)");
-  }catch(e){
-    setSaveStatus("Save failed — check connection","var(--err)");
-    console.error("Firebase save error:",e);
-  }
-  SAVING=false;
 }
 
 function openFirebaseSettings(){
@@ -1568,35 +1580,27 @@ function loadDemoData(){
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (function(){
-  try{
-    const stored=localStorage.getItem("sa_fb_config");
-    const hasFBConfig=stored&&JSON.parse(stored).apiKey;
-
-    if(hasFBConfig){
-      // Has Firebase config — load cache instantly, then sync
-      const cached=localStorage.getItem("sa_db_cache");
-      if(cached){
-        const d=JSON.parse(cached);
-        if(d.projects) DB.projects=d.projects;
-        if(d.tasks) DB.tasks=d.tasks;
-        if(d.logs) DB.logs=d.logs;
-        if(d.comms) DB.comms=d.comms;
-        renderSB(); renderPort();
-      } else {
-        DB.projects=[]; DB.tasks=[]; DB.logs=[]; DB.comms=[];
-        renderSB(); renderPort();
-      }
-      bootFirebase(JSON.parse(stored));
-      return;
-    }
-  }catch(e){ console.warn("Init error:",e); }
-
-  // No Firebase config — show demo, nudge to connect via Settings
+  // Always render demo data immediately so app is visible
   loadDemoData();
   const b=document.getElementById("demo-banner");
   if(b) b.style.display="flex";
   renderSB(); renderPort();
+
+  try{
+    const stored=localStorage.getItem("sa_fb_config");
+    if(stored){
+      const cfg=JSON.parse(stored);
+      if(cfg.apiKey&&cfg.projectId){
+        // Boot Firebase silently — will replace demo data on sign-in
+        bootFirebase(cfg);
+        return;
+      }
+    }
+  }catch(e){ console.warn("Init error:",e); }
+
+  // No Firebase config — show sign-in modal over demo
   setSaveStatus("Demo mode — not saving","var(--warn)");
+  document.getElementById("mod-auth").classList.add("open");
 })();
 </script>
 </body>
