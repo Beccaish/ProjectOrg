@@ -1168,7 +1168,10 @@ function saveComms(id){
 }
 
 // ─── AI GENERATOR ─────────────────────────────────────────────────────────────
-let AI_KEY='', AI_PROVIDER='deepseek', AI_PROJ={}, AI_TASKS=[], AI_SEL={};
+// Load saved AI preferences
+let AI_KEY=localStorage.getItem("sa_ai_key")||'';
+let AI_PROVIDER=localStorage.getItem("sa_ai_provider")||'deepseek';
+let AI_PROJ={}, AI_TASKS=[], AI_SEL={};
 
 const AI_PROVIDERS={
   deepseek:{ label:"DeepSeek", url:"https://api.deepseek.com/chat/completions",  model:"deepseek-chat",       hint:"platform.deepseek.com", auth:"Bearer" },
@@ -1182,11 +1185,11 @@ const AI_PROVIDERS={
 function openAI(){ AI_PROJ={}; AI_TASKS=[]; AI_SEL={}; renderAIStep1(); openM("mod-ai"); }
 
 function renderAIStep1(){
-  var keyHint = AI_KEY ? '<span style="color:var(--ok);font-size:11px">✓ Key saved for session</span>' : '';
+  var keyHint = AI_KEY ? '<span style="color:var(--ok);font-size:11px">✓ Key saved</span>' : '';
   var providerBtns = Object.keys(AI_PROVIDERS).map(function(k){
     var p=AI_PROVIDERS[k];
     var active=k===AI_PROVIDER;
-    return '<button type="button" onclick="AI_PROVIDER=\''+k+'\';renderAIStep1()" style="padding:6px 12px;border-radius:6px;border:1px solid '+(active?'var(--accent)':'var(--border)')+';background:'+(active?'rgba(124,110,245,.15)':'none')+';color:'+(active?'var(--accent)':'var(--mid)')+';font-size:12px;font-weight:'+(active?'700':'400')+';font-family:inherit;cursor:pointer">'+p.label+'</button>';
+    return '<button type="button" onclick="AI_PROVIDER=\''+k+'\';localStorage.setItem(\'sa_ai_provider\',\''+k+'\');renderAIStep1()" style="padding:6px 12px;border-radius:6px;border:1px solid '+(active?'var(--accent)':'var(--border)')+';background:'+(active?'rgba(124,110,245,.15)':'none')+';color:'+(active?'var(--accent)':'var(--mid)')+';font-size:12px;font-weight:'+(active?'700':'400')+';font-family:inherit;cursor:pointer">'+p.label+'</button>';
   }).join("");
   var prov=AI_PROVIDERS[AI_PROVIDER];
   document.getElementById("ai-body").innerHTML =
@@ -1196,7 +1199,7 @@ function renderAIStep1(){
     '<div style="display:flex;gap:6px;flex-wrap:wrap">' + providerBtns + '</div></div>' +
     '<div class="field"><label class="flabel">API Key ' + keyHint + '</label>' +
     '<input class="inp" id="ai-key" type="password" placeholder="Your '+prov.label+' API key" value="' + esc(AI_KEY) + '" style="font-family:monospace"/>' +
-    '<div style="color:var(--dim);font-size:11px;margin-top:4px">Never stored — session memory only. Get your key at <a href="https://'+prov.hint+'" target="_blank" style="color:var(--accent)">'+prov.hint+'</a></div></div>' +
+    '<div style="color:var(--dim);font-size:11px;margin-top:4px">Saved to this browser. Get your key at <a href="https://'+prov.hint+'" target="_blank" style="color:var(--accent)">'+prov.hint+'</a></div></div>' +
     '<div class="field"><label class="flabel">Project Brief</label>' +
     '<textarea class="ta" id="ai-br" style="min-height:150px" placeholder="Describe the project: client, objectives, Power Platform components, integrations, timeline, constraints..."></textarea></div>' +
     '<div class="ffoot"><button class="btn bg" onclick="closeM(\'mod-ai\')">Cancel</button>' +
@@ -1211,6 +1214,7 @@ async function runAI(){
   if(!key){ alert("Enter your "+prov.label+" API key first"); return; }
   if(!brief){ alert("Paste a project brief first"); return; }
   AI_KEY = key;
+  localStorage.setItem("sa_ai_key", key);
   var btn = document.getElementById("ai-gb");
   btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Generating...';
   document.getElementById("ai-res").innerHTML=
